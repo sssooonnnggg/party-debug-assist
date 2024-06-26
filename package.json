@@ -3,7 +3,7 @@
     "displayName": "PartyDebugAssist",
     "description": "A simple tool to push files to Android device",
     "publisher": "sssooonnnggg",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "engines": {
         "vscode": "^1.89.0"
     },
@@ -24,7 +24,7 @@
                 "party-debug-assist.androidRoot": {
                     "type": "string",
                     "description": "Path of android root",
-                    "default": "Android/data/com.lilith.paidui/files/ProjectDebug/lua"
+                    "default": "/sdcard/Android/data/com.lilith.paidui/files/ProjectDebug/lua"
                 },
                 "party-debug-assist.partyRoot": {
                     "type": "string",
