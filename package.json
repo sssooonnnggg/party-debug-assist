@@ -1,0 +1,69 @@
+{
+    "name": "party-debug-assist",
+    "displayName": "PartyDebugAssist",
+    "description": "A simple tool to push files to Android device",
+    "publisher": "sssooonnnggg",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.89.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "homepage": "https://github.com/sssooonnnggg/blob/master/README.md",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/sssooonnnggg/usdc-viewer.git"
+    },
+    "activationEvents": [],
+    "main": "./out/extension.js",
+    "contributes": {
+        "configuration": {
+            "title": "Party Debug Assist",
+            "properties": {
+                "party-debug-assist.androidRoot": {
+                    "type": "string",
+                    "description": "Path of android root",
+                    "default": "Android/data/com.lilith.paidui/files/ProjectDebug/lua"
+                },
+                "party-debug-assist.partyRoot": {
+                    "type": "string",
+                    "description": "Path of party root",
+                    "default": "${workspaceRoot}"
+                }
+            }
+        },
+        "commands": [
+            {
+                "command": "party-debug-assist.push",
+                "title": "[Party] Push to Android"
+            }
+        ],
+        "menus": {
+            "explorer/context": [
+                {
+                    "command": "party-debug-assist.push"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "yarn run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "yarn run compile && yarn run lint",
+        "lint": "eslint src --ext ts",
+        "test": "vscode-test"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.90.0",
+        "@types/mocha": "^10.0.6",
+        "@types/node": "20.x",
+        "@typescript-eslint/eslint-plugin": "^7.11.0",
+        "@typescript-eslint/parser": "^7.11.0",
+        "eslint": "^8.57.0",
+        "typescript": "^5.4.5",
+        "@vscode/test-cli": "^0.0.9",
+        "@vscode/test-electron": "^2.4.0"
+    }
+}
