@@ -9,7 +9,7 @@ async function pushLuaFileToAndroid(filePath: string) {
     let partyRoot = vscode.workspace.getConfiguration('party-debug-assist').get('partyRoot') as string;
     partyRoot = partyRoot.replace("${workspaceRoot}", workspaceRoot!);
     const relativePath = path.relative(partyRoot, filePath);
-    const targetPath = path.posix.join(androidAppRoot, relativePath).normalize();
+    const targetPath = path.posix.join(androidAppRoot, relativePath).normalize().replace(/\\/g, '/');
     const targetDir = path.posix.dirname(targetPath);
     console.log(`from: ${filePath}`);
     console.log(`to: ${targetPath}`);
