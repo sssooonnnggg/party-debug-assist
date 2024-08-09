@@ -1,28 +1,44 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as process from 'child_process';
+import * as fs from 'fs';
 import { TextDecoder } from 'util';
 
-async function pushLuaFileToAndroid(filePath: string) {
+async function execWithLog(command: string) {
+    console.log(command);
+    await process.execSync(command);
+}
+
+async function pushLuaFileOrFolderToAndroid(sourcePath: string) {
     const workspaceRoot = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
     const androidAppRoot = vscode.workspace.getConfiguration('party-debug-assist').get('androidRoot') as string;
     let partyRoot = vscode.workspace.getConfiguration('party-debug-assist').get('partyRoot') as string;
     partyRoot = partyRoot.replace("${workspaceRoot}", workspaceRoot!);
-    const relativePath = path.relative(partyRoot, filePath);
-    const targetPath = path.posix.join(androidAppRoot, relativePath).normalize().replace(/\\/g, '/');
-    const targetDir = path.posix.dirname(targetPath);
-    console.log(`from: ${filePath}`);
+    const relativePath = path.relative(partyRoot, sourcePath);
+    let targetPath = path.posix.join(androidAppRoot, relativePath).normalize().replace(/\\/g, '/');
+    let targetDir = path.posix.dirname(targetPath);
+
+    let isDir = false;
+    if (fs.lstatSync(sourcePath).isDirectory()) {
+        sourcePath += "/.";
+        isDir = true;
+    }
+
+    console.log(`from: ${sourcePath}`);
     console.log(`to: ${targetPath}`);
-    vscode.window.showInformationMessage(`Pushing to Android: ${filePath} => ${targetPath}`);
-    await process.execSync(`adb shell mkdir -p ${targetDir}`);
-    await process.execSync(`adb push ${filePath} ${targetPath}`);
+
+    vscode.window.showInformationMessage(`Pushing to Android: ${sourcePath} => ${targetPath}`);
+
+    await execWithLog(`adb shell rm ${isDir ? "-rf" : "-f"} ${targetPath}`);
+    await execWithLog(`adb shell mkdir -p ${targetDir}`);
+    await execWithLog(`adb push ${sourcePath} ${targetPath}`);
 }
 
 export function activate(context: vscode.ExtensionContext) {
     const disposable = vscode.commands.registerCommand('party-debug-assist.push', async (uri: vscode.Uri) => {
         try {
             if (uri) {
-                await pushLuaFileToAndroid(uri.fsPath);
+                await pushLuaFileOrFolderToAndroid(uri.fsPath);
                 vscode.window.showInformationMessage(`Pushed to Android: ${uri.fsPath}`);
             }
         } catch (error) {
