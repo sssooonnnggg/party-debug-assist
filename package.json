@@ -3,7 +3,7 @@
     "displayName": "PartyDebugAssist",
     "description": "A simple tool to push files to Android device",
     "publisher": "sssooonnnggg",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "engines": {
         "vscode": "^1.89.0"
     },
@@ -31,6 +31,11 @@
                     "type": "string",
                     "description": "Path of party root",
                     "default": "${workspaceRoot}"
+                },
+                "party-debug-assist.logRoot": {
+                    "type": "string",
+                    "description": "Path of log root",
+                    "default": "/sdcard/Android/data/com.lilith.paidui/files"
                 }
             }
         },
@@ -38,12 +43,19 @@
             {
                 "command": "party-debug-assist.push",
                 "title": "[Party] Push to Android"
+            },
+            {
+                "command": "party-debug-assist.pull",
+                "title": "[Party] Pull log from Android"
             }
         ],
         "menus": {
             "explorer/context": [
                 {
                     "command": "party-debug-assist.push"
+                },
+                {
+                    "command": "party-debug-assist.pull"
                 }
             ]
         }

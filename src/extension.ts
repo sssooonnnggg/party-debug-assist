@@ -35,7 +35,7 @@ async function pushLuaFileOrFolderToAndroid(sourcePath: string) {
 }
 
 export function activate(context: vscode.ExtensionContext) {
-    const disposable = vscode.commands.registerCommand('party-debug-assist.push', async (uri: vscode.Uri) => {
+    const push = vscode.commands.registerCommand('party-debug-assist.push', async (uri: vscode.Uri) => {
         try {
             if (uri) {
                 await pushLuaFileOrFolderToAndroid(uri.fsPath);
@@ -50,7 +50,18 @@ export function activate(context: vscode.ExtensionContext) {
         }
     });
 
-    context.subscriptions.push(disposable);
+    context.subscriptions.push(push);
+
+    const pull = vscode.commands.registerCommand('party-debug-assist.pull', async (uri: vscode.Uri) => {
+        const workspaceRoot = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
+        const pullRoot = vscode.workspace.getConfiguration('party-debug-assist').get('logRoot') as string;
+        vscode.window.showInformationMessage(`Pulling from Android: ${uri.fsPath} => ${workspaceRoot}`);
+
+        await execWithLog(`adb pull ${pullRoot} ${workspaceRoot}`);
+        vscode.window.showInformationMessage(`Pulled from Android: ${pullRoot}`);
+    });
+
+    context.subscriptions.push(pull);
 }
 
 export function deactivate() { }
